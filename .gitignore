@@ -1,0 +1,43 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editors and IDEs
+.idea/
+*.iml
+.vscode/
+.bsp/
+.metals/
+.scala-build/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.local
+
+# Logs
+*.log
+logs/
+
+# Dependencies and build output
+node_modules/
+dist/
+build/
+target/
+out/
+.vite/
+*.tsbuildinfo
+
+# Test and coverage output
+coverage/
+.nyc_output/
+
+# Runtime and cache files
+tmp/
+temp/
+.cache/
+
+# Docker local overrides
+docker-compose.override.yml
+compose.override.yml

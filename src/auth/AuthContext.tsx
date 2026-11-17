@@ -2,14 +2,14 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { setAccessTokenProvider } from '../api/client';
 import keycloak, { initKeycloak } from './keycloak';
 
-type AuthUser = {
+export type AuthUser = {
   subject: string;
   email?: string;
   displayName?: string;
   username?: string;
 };
 
-type AuthContextValue = {
+export type AuthContextValue = {
   authenticated: boolean;
   initializing: boolean;
   error?: string;
@@ -19,7 +19,8 @@ type AuthContextValue = {
   getToken: () => Promise<string | undefined>;
 };
 
-const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+// Exported so alternative providers (e.g. the local demo mode) can supply a session without Keycloak.
+export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 function readUser(): AuthUser | undefined {
   const token = keycloak.tokenParsed;

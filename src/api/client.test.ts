@@ -78,3 +78,18 @@ it('uses a configured API base URL', async () => {
   await configuredApi.listTrainings();
   expect(fetch).toHaveBeenCalledWith('https://api.example.test/trainings', expect.any(Object));
 });
+
+it('sends requests through a replacement transport instead of fetch', async () => {
+  vi.resetModules();
+  const { exerciseApi: isolatedApi, setAccessTokenProvider: setIsolatedTokenProvider, setApiTransport } = await import('./client');
+  const transport = vi.fn(async () => new Response(JSON.stringify({ id: 'from-transport' }), { status: 201 }));
+  setIsolatedTokenProvider(async () => 'token');
+  setApiTransport(transport);
+  await expect(isolatedApi.createTraining(trainingRequest)).resolves.toEqual({ id: 'from-transport' });
+  expect(transport).toHaveBeenCalledWith('/trainings', {
+    method: 'POST',
+    body: JSON.stringify(trainingRequest),
+    headers: { 'content-type': 'application/json', authorization: 'Bearer token' },
+  });
+  expect(fetch).not.toHaveBeenCalled();
+});

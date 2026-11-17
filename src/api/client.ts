@@ -23,10 +23,24 @@ export function setAccessTokenProvider(provider: () => Promise<string | undefine
   accessTokenProvider = provider;
 }
 
+/**
+ * Sends an API request. `path` is relative to the API base URL, e.g. `/trainings`.
+ * Defaults to `fetch` against the real backend; local demo mode swaps in an in-memory backend.
+ */
+export type ApiTransport = (path: string, init: RequestInit) => Promise<Response>;
+
+const fetchTransport: ApiTransport = (path, init) => fetch(`${API_BASE_URL}${path}`, init);
+
+let transport: ApiTransport = fetchTransport;
+
+export function setApiTransport(next: ApiTransport) {
+  transport = next;
+}
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = await accessTokenProvider?.();
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
+  const response = await transport(path, {
     ...options,
     headers: {
       'content-type': 'application/json',
